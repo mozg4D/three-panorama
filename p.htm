@@ -12,10 +12,10 @@
 <script> mouseIsDown=false
 alpha=beta=0
 scale=50
-ww=window.innerWidth;wh=window.innerHeighty
+ww=window.innerWidth; wh=window.innerHeight
 
 scene = new THREE.Scene()
-renderer = new THREE.WebGLRenderer()
+renderer = new THREE.WebGLRenderer({ alpha: true })
 renderer.setSize(ww, wh)
 renderer.context.disable(renderer.context.DEPTH_TEST)
 
@@ -23,18 +23,18 @@ camera = new THREE.PerspectiveCamera( Math.min( scale + 20*wh/ww, 90 ), ww/wh, 3
 camera.rotation.order = 'YXZ'
 
 plane = new THREE.PlaneBufferGeometry( 10, 10 )
-t1 = new THREE.TextureLoader().load( '1f1.jpg', ()=>{renderer.render( scene, camera )}); t1.minFilter = THREE.LinearFilter; t1.magFilter = THREE.NearestFilter; t1.generateMipmaps = false
-t2 = new THREE.TextureLoader().load( '1r1.jpg', ()=>{renderer.render( scene, camera )}); t2.minFilter = THREE.LinearFilter; t2.magFilter = THREE.NearestFilter; t2.generateMipmaps = false
-t3 = new THREE.TextureLoader().load( '1b1.jpg', ()=>{renderer.render( scene, camera )}); t3.minFilter = THREE.LinearFilter; t3.magFilter = THREE.NearestFilter; t3.generateMipmaps = false
-t4 = new THREE.TextureLoader().load( '1l1.jpg', ()=>{renderer.render( scene, camera )}); t4.minFilter = THREE.LinearFilter; t4.magFilter = THREE.NearestFilter; t4.generateMipmaps = false
-t5 = new THREE.TextureLoader().load( '1d1.jpg', ()=>{renderer.render( scene, camera )}); t5.minFilter = THREE.LinearFilter; t5.magFilter = THREE.NearestFilter; t5.generateMipmaps = false
-t6 = new THREE.TextureLoader().load( '1u1.jpg', ()=>{renderer.render( scene, camera )}); t6.minFilter = THREE.LinearFilter; t6.magFilter = THREE.NearestFilter; t6.generateMipmaps = false
-p1 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t1} )); p1.position.z = -5; scene.add( p1 )
-p2 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t2} )); p2.position.x =  5; p2.rotation.y = -Math.PI/2; scene.add( p2 )
-p3 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t3} )); p3.position.z =  5; p3.rotation.y =  Math.PI  ; scene.add( p3 )
-p4 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t4} )); p4.position.x = -5; p4.rotation.y =  Math.PI/2; scene.add( p4 )
-p5 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t5} )); p5.position.y = -5; p5.rotation.set(-Math.PI/2, 0,  Math.PI/2); scene.add( p5 )
-p6 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t6} )); p6.position.y =  5; p6.rotation.set( Math.PI/2, 0, -Math.PI/2); scene.add( p6 )
+t1 = new THREE.TextureLoader().load( '1f1.jpg', ()=>{scene.add( p1 ); renderer.render( scene, camera )}); t1.minFilter = THREE.LinearFilter; t1.magFilter = THREE.NearestFilter; t1.generateMipmaps = false
+t2 = new THREE.TextureLoader().load( '1r1.jpg', ()=>{scene.add( p2 ); renderer.render( scene, camera )}); t2.minFilter = THREE.LinearFilter; t2.magFilter = THREE.NearestFilter; t2.generateMipmaps = false
+t3 = new THREE.TextureLoader().load( '1b1.jpg', ()=>{scene.add( p3 ); renderer.render( scene, camera )}); t3.minFilter = THREE.LinearFilter; t3.magFilter = THREE.NearestFilter; t3.generateMipmaps = false
+t4 = new THREE.TextureLoader().load( '1l1.jpg', ()=>{scene.add( p4 ); renderer.render( scene, camera )}); t4.minFilter = THREE.LinearFilter; t4.magFilter = THREE.NearestFilter; t4.generateMipmaps = false
+t5 = new THREE.TextureLoader().load( '1d1.jpg', ()=>{scene.add( p5 ); renderer.render( scene, camera )}); t5.minFilter = THREE.LinearFilter; t5.magFilter = THREE.NearestFilter; t5.generateMipmaps = false
+t6 = new THREE.TextureLoader().load( '1u1.jpg', ()=>{scene.add( p6 ); renderer.render( scene, camera )}); t6.minFilter = THREE.LinearFilter; t6.magFilter = THREE.NearestFilter; t6.generateMipmaps = false
+p1 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t1} )); p1.position.z = -5
+p2 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t2} )); p2.position.x =  5; p2.rotation.y = -Math.PI/2
+p3 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t3} )); p3.position.z =  5; p3.rotation.y =  Math.PI  
+p4 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t4} )); p4.position.x = -5; p4.rotation.y =  Math.PI/2
+p5 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t5} )); p5.position.y = -5; p5.rotation.set(-Math.PI/2, 0,  Math.PI/2)
+p6 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t6} )); p6.position.y =  5; p6.rotation.set( Math.PI/2, 0, -Math.PI/2)
 
 function rescale(){
     if(ww!=window.innerWidth || wh!=window.innerHeight) {ww=window.innerWidth; wh=window.innerHeight
