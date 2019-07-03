@@ -7,10 +7,14 @@
 <svg id="zom" style="right:7;top:46" onclick="zm()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
 <path style="stroke:#000;fill:none" id="z" d="M10,16 h12 M16,10 v12"></path></svg>
 
+<svg  id="gy0" style="right:7;top:124" onclick="gy()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
+<path style="stroke:#000;fill:none" d="M9.5,27.5 9.5,4.5 10.5,3.5 21.5,3.5 22.5,4.5 22.5,27.5 21.5,28.5 10.5,28.5 z M9,6.5 23,6.5 M 9,24.5 23,24.5 M14,26.5 18,26.5"></path>
+<path id="g1" style="stroke:#000;fill:none" d="M14,15 17,18 14,21 M20,18 A8,3 0 0 0 28,15 A8,3 0 0 0 23,12 M7,12 A8,3 0 0 0 4,15 A8,3 0 0 0 8,17.3 M8,17.3 14,18 17,18"></path></svg>
+
 <script src="three.js"></script>
 
 <script> mouseIsDown=false
-alpha=beta=0
+alpha=beta=gyo=0
 scale=50
 ww=window.innerWidth; wh=window.innerHeight
 
@@ -64,7 +68,8 @@ function rotateCam(){
     renderer.render( scene, camera )}
 
 fss=false; function fs(){fss=!fss; fss ? LinksBody.requestFullscreen() : document.exitFullscreen()}
-
 function zm(){if(scale==50){z.setAttribute("d","M10,16 h12");scale=20;reset()}else{z.setAttribute("d","M10,16 h12 M16,10 v12");scale=50;reset()}}
-
+function gy(){if(!gyo){gyo=1; g1.setAttribute("d","M14,16 a1,1 0 0 0 4,0 a1,1 0 0 0 -4,0"); window.addEventListener("devicemotion", gyro )}
+    else{gyo=0;g1.setAttribute("d","M14,15 17,18 14,21 M20,18 A8,3 0 0 0 28,15 A8,3 0 0 0 23,12 M7,12 A8,3 0 0 0 4,15 A8,3 0 0 0 8,17.3 M8,17.3 14,18 17,18"); window.removeEventListener("devicemotion", gyro )}}
+function gyro(){if(wh > ww){alpha += event.rotationRate.beta/3000; beta += event.rotationRate.alpha/4000} else{beta -= event.rotationRate.beta/3000; alpha += event.rotationRate.alpha/4000} rotateCam()}
 </script></body>
