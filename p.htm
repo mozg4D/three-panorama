@@ -1,5 +1,5 @@
-<!DOCTYPE html><html lang="en"></html><head><meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1"><meta name=Description content="PanoramaViewer">
-<style>.ico{width:32px;height:32px}.ico:hover{border:2px solid #fff;margin:-2px} canvas{touch-action:none} svg,img,span,div{position:absolute}
+<!DOCTYPE html><html lang="en"></html><head><meta charset="UTF-8"><meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1"><meta name=Description content="PanoramaViewer">
+<style>.ico{width:32px;height:32px}.ico:hover{border:2px solid #fff;margin:-2px} canvas{touch-action:none} svg,img,span,div{position:absolute;touch-action:none}
 .arr{top:-1px;width:22px;height:24px;background-color:#ddd;cursor:pointer}.arr:hover{background-color:#999}.arr:active{background-color:#ccc}</style>
 
 </head><body id="LinksBody" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
@@ -24,33 +24,72 @@
 <div class="arr" style="left:-23px;border-radius:14px 0 0 14px;border:1px solid black;border-right:#fff" onclick="l()"></div><font id="current">6</font> / <font id="total">10</font>
 <div class="arr" style="right:-23px;border-radius:0 14px 14px 0;border:1px solid black;border-left:#fff" onclick="r()"></div></span>
 
+<div id=test>313</div>
 
 <script> mouseIsDown=false
-alpha=beta=gyo=0
-scale=50
+alpha=beta=gyo=y=0
+scale=55
 ww=window.innerWidth; wh=window.innerHeight
+
+url=new URL(window.location.href)
+p = url.searchParams.get("p"); if(!p) p=current.innerHTML; else current.innerHTML = p 
+v = url.searchParams.get("v"); if(!v) v=1
 
 scene = new THREE.Scene()
 renderer = new THREE.WebGLRenderer({ alpha: true })
 renderer.setSize(ww, wh)
 renderer.context.disable(renderer.context.DEPTH_TEST)
 
-camera = new THREE.PerspectiveCamera( Math.min( scale + 20*wh/ww, 90 ), ww/wh, 3, 9)
+camera = new THREE.PerspectiveCamera( Math.min( scale + 20*wh/ww, 90 ), ww/wh, 0.1, 9)
 camera.rotation.order = 'YXZ'
 
 plane = new THREE.PlaneBufferGeometry( 10, 10 )
-t1 = new THREE.TextureLoader().load( '1f1.jpg', ()=>{scene.add( p1 ); renderer.render( scene, camera )}); t1.minFilter = THREE.LinearFilter; t1.magFilter = THREE.NearestFilter; t1.generateMipmaps = false
-t2 = new THREE.TextureLoader().load( '1r1.jpg', ()=>{scene.add( p2 ); renderer.render( scene, camera )}); t2.minFilter = THREE.LinearFilter; t2.magFilter = THREE.NearestFilter; t2.generateMipmaps = false
-t3 = new THREE.TextureLoader().load( '1b1.jpg', ()=>{scene.add( p3 ); renderer.render( scene, camera )}); t3.minFilter = THREE.LinearFilter; t3.magFilter = THREE.NearestFilter; t3.generateMipmaps = false
-t4 = new THREE.TextureLoader().load( '1l1.jpg', ()=>{scene.add( p4 ); renderer.render( scene, camera )}); t4.minFilter = THREE.LinearFilter; t4.magFilter = THREE.NearestFilter; t4.generateMipmaps = false
-t5 = new THREE.TextureLoader().load( '1d1.jpg', ()=>{scene.add( p5 ); renderer.render( scene, camera )}); t5.minFilter = THREE.LinearFilter; t5.magFilter = THREE.NearestFilter; t5.generateMipmaps = false
-t6 = new THREE.TextureLoader().load( '1u1.jpg', ()=>{scene.add( p6 ); renderer.render( scene, camera )}); t6.minFilter = THREE.LinearFilter; t6.magFilter = THREE.NearestFilter; t6.generateMipmaps = false
-p1 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t1} )); p1.position.z = -5
-p2 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t2} )); p2.position.x =  5; p2.rotation.y = -Math.PI/2
-p3 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t3} )); p3.position.z =  5; p3.rotation.y =  Math.PI  
-p4 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t4} )); p4.position.x = -5; p4.rotation.y =  Math.PI/2
-p5 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t5} )); p5.position.y = -5; p5.rotation.set(-Math.PI/2, 0,  Math.PI/2)
-p6 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial( {map: t6} )); p6.position.y =  5; p6.rotation.set( Math.PI/2, 0, -Math.PI/2)
+loader = new THREE.TextureLoader()
+
+p1 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p1.position.z = -5; scene.add( p1 )
+p2 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p2.position.x =  5; p2.rotation.y = -Math.PI/2; scene.add( p2 )
+p3 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p3.position.z =  5; p3.rotation.y =  Math.PI  ; scene.add( p3 )
+p4 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p4.position.x = -5; p4.rotation.y =  Math.PI/2; scene.add( p4 )
+p5 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p5.position.y = -5; p5.rotation.x = -Math.PI/2; scene.add( p5 )
+p6 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p6.position.y =  5; p6.rotation.x =  Math.PI/2; scene.add( p6 )
+
+update_tex()
+
+function update_tex(){
+
+    if (y >= 0   && y < 45 ) {a = "f"; b = "r"; c = "b"; d = "l"; aa = p1; bb = p2; cc = p3; dd = p4}
+    if (y >= 45  && y < 90 ) {a = "r"; b = "f"; c = "b"; d = "l"; aa = p2; bb = p1; cc = p3; dd = p4}
+    if (y >= 90  && y < 135) {a = "r"; b = "b"; c = "l"; d = "f"; aa = p2; bb = p3; cc = p4; dd = p1}
+    if (y >= 135 && y < 180) {a = "b"; b = "r"; c = "l"; d = "f"; aa = p3; bb = p2; cc = p4; dd = p1}
+    if (y >= 180 && y < 225) {a = "b"; b = "l"; c = "f"; d = "r"; aa = p3; bb = p4; cc = p1; dd = p2}
+    if (y >= 225 && y < 270) {a = "l"; b = "b"; c = "f"; d = "r"; aa = p4; bb = p3; cc = p1; dd = p2}
+    if (y >= 270 && y < 315) {a = "l"; b = "f"; c = "r"; d = "b"; aa = p4; bb = p1; cc = p2; dd = p3}
+    if (y >= 315 && y < 360) {a = "f"; b = "l"; c = "r"; d = "b"; aa = p1; bb = p4; cc = p2; dd = p3}
+
+    t1 = loader.load( 'img/' + p +  a  + v + '.jpg', ()=>{
+        t1.minFilter = THREE.LinearFilter; t1.magFilter = THREE.NearestFilter; t1.generateMipmaps = false
+        aa.material.map = t1; aa.material.needsUpdate = true; renderer.render( scene, camera )
+        t2 = loader.load( 'img/' + p +  b  + v + '.jpg', ()=>{
+            t2.minFilter = THREE.LinearFilter; t2.magFilter = THREE.NearestFilter; t2.generateMipmaps = false
+            bb.material.map = t2; bb.material.needsUpdate = true; renderer.render( scene, camera )
+            t3 = loader.load( 'img/' + p +  c  + v + '.jpg', ()=>{
+                t3.minFilter = THREE.LinearFilter; t3.magFilter = THREE.NearestFilter; t3.generateMipmaps = false
+                cc.material.map = t3; cc.material.needsUpdate = true; renderer.render( scene, camera )
+                t4 = loader.load( 'img/' + p +  d  + v + '.jpg', ()=>{
+                    t4.minFilter = THREE.LinearFilter; t4.magFilter = THREE.NearestFilter; t4.generateMipmaps = false
+                    dd.material.map = t4; dd.material.needsUpdate = true; renderer.render( scene, camera )
+                    t5 = loader.load( 'img/' + p + 'd' + v + '.jpg', ()=>{
+                        t5.minFilter = THREE.LinearFilter; t5.magFilter = THREE.NearestFilter; t5.generateMipmaps = false
+                        p5.material.map = t5; p5.material.needsUpdate = true; renderer.render( scene, camera )
+                        t6 = loader.load( 'img/' + p + 'u' + v + '.jpg', ()=>{
+                            t6.minFilter = THREE.LinearFilter; t6.magFilter = THREE.NearestFilter; t6.generateMipmaps = false
+                            p6.material.map = t6; p6.material.needsUpdate = true; renderer.render( scene, camera )})
+                    })                    
+                })
+            })        
+        })
+    })
+}
 
 function rescale(){
     if(ww!=window.innerWidth || wh!=window.innerHeight) {ww=window.innerWidth; wh=window.innerHeight
@@ -59,7 +98,7 @@ function rescale(){
     reset()}}
 
 function reset(){
-    camera.fov = Math.min( scale + 20*wh/ww, 90 )
+    camera.fov = Math.min( scale + 25*wh/ww, 90 )
     camera.updateProjectionMatrix()
     renderer.render( scene, camera )}
 
@@ -76,14 +115,17 @@ ontouchmove = (e)=>{if(mouseIsDown){alpha -= (x_coord-e.touches[0].clientX)/130;
 function rotateCam(){
     if(beta> 1.57) beta= 1.57
     if(beta<-1.57) beta=-1.57
+
+    y = Math.abs((360-alpha*180/Math.PI) % 360)
+
     camera.rotation.set(beta, alpha, 0)
     renderer.render( scene, camera )}
 
 fss=false; function fs(){fss=!fss; fss ? LinksBody.requestFullscreen() : document.exitFullscreen()}
 
 function zm(){
-    if(scale==50){z.setAttribute("d","M10,16 h12");   scale=20; reset()}
-    else{z.setAttribute("d","M10,16 h12 M16,10 v12"); scale=50; reset()}}
+    if(scale==55){z.setAttribute("d","M10,16 h12");   scale=20; reset()}
+    else{z.setAttribute("d","M10,16 h12 M16,10 v12"); scale=55; reset()}}
 
 function gy(){
     if(!gyo){
@@ -94,13 +136,25 @@ function gy(){
         window.removeEventListener("devicemotion", gyro )}}
 
 function gyro(){
-    if(window.orientation==  0) {alpha += event.rotationRate.beta/6000; beta  += event.rotationRate.alpha/6000}
-    if(window.orientation== 90) {beta  -= event.rotationRate.beta/6000; alpha += event.rotationRate.alpha/6000}
-    if(window.orientation==-90) {beta  += event.rotationRate.beta/6000; alpha -= event.rotationRate.alpha/6000}
+    if(window.orientation==  0) {alpha += event.rotationRate.beta/4000; beta  += event.rotationRate.alpha/4000}
+    if(window.orientation== 90) {beta  -= event.rotationRate.beta/4000; alpha += event.rotationRate.alpha/4000}
+    if(window.orientation==-90) {beta  += event.rotationRate.beta/4000; alpha -= event.rotationRate.alpha/4000}
     rotateCam()}
 
 window.addEventListener("devicemotion", ()=>{if(event.rotationRate.alpha) gy0.style.visibility="visible"})
 
 function mp(){if(map_img.style.visibility=="visible") map_img.style.visibility="hidden"; else map_img.style.visibility="visible"}
 
+function r(){
+    current.innerHTML = parseInt(current.innerHTML) + 1
+    if( parseInt(current.innerHTML) > parseInt(total.innerHTML) ) current.innerHTML=1
+    p=parseInt(current.innerHTML)
+    update_tex()}
+
+function l(){
+    current.innerHTML = parseInt(current.innerHTML) - 1
+    if( parseInt(current.innerHTML) < 1 ) current.innerHTML = parseInt(total.innerHTML)
+    p = parseInt(current.innerHTML)
+    update_tex()}
+    
 </script></body>
