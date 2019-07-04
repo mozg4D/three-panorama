@@ -1,6 +1,8 @@
 <!DOCTYPE html><html lang="en"></html><head><meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1"><meta name=Description content="PanoramaViewer">
-<style>.ico{position:absolute;width:32px;height:32px}.ico:hover{border:2px solid #fff;margin:-2px} canvas{touch-action:none}</style>
-</head><body id="LinksBody" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0)">
+<style>.ico{width:32px;height:32px}.ico:hover{border:2px solid #fff;margin:-2px} canvas{touch-action:none} svg,img,span,div{position:absolute}
+.arr{top:-1px;width:22px;height:24px;background-color:#ddd;cursor:pointer}.arr:hover{background-color:#999}.arr:active{background-color:#ccc}</style>
+
+</head><body id="LinksBody" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
 <svg style="right:7;top:7" onclick="fs()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
 <path style="stroke:#000;fill:none" d="M6,12 v-6 h6 M20,6 h6 v6 M26,20 v6 h-6 M12,26 h-6 v-6"></path></svg>
 
@@ -11,6 +13,17 @@
 <path style="stroke:#000;fill:none" d="M9.5,27.5 9.5,4.5 10.5,3.5 21.5,3.5 22.5,4.5 22.5,27.5 21.5,28.5 10.5,28.5 z M9,6.5 23,6.5 M 9,24.5 23,24.5 M14,26.5 18,26.5"></path>
 <path id="g1" style="stroke:#000;fill:none" d="M14,15 17,18 14,21 M20,18 A8,3 0 0 0 28,15 A8,3 0 0 0 23,12 M7,12 A8,3 0 0 0 4,15 A8,3 0 0 0 8,17.3 M8,17.3 14,18 17,18"></path></svg>
 <script src="three.js"></script>
+
+<svg id="map" style="right:7;top:85" onclick="mp()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
+<path fill="#666" d="M16,26 10,14 A10,10 0 0 1 9,10 A1,1 0 0 1 23,10 A10,10 0 0 1 22,14 z"></path>
+<path fill="none" stroke="#000" d="M18,22 A8,3 0 0 1 24,25 A8,3 0 0 1 8,25 A8,3 0 0 1 14,22"></path><path fill="#fff" d="M13.5,10 A1,1 0 0 1 18.5,10 A1,1 0 0 1 13.5,10"></path></svg>
+
+<img id="map_img" style="visibility:visible" src="ico/map.png">
+
+<span id="counter" style="left: calc(50% - 22px); bottom: 16px; background-color: white; font-size: 18px; padding: 2px 6px 0px; height: 22px; border: 1px solid black; visibility: visible;">
+<div class="arr" style="left:-23px;border-radius:14px 0 0 14px;border:1px solid black;border-right:#fff" onclick="l()"></div><font id="current">6</font> / <font id="total">10</font>
+<div class="arr" style="right:-23px;border-radius:0 14px 14px 0;border:1px solid black;border-left:#fff" onclick="r()"></div></span>
+
 
 <script> mouseIsDown=false
 alpha=beta=gyo=0
@@ -67,17 +80,27 @@ function rotateCam(){
     renderer.render( scene, camera )}
 
 fss=false; function fs(){fss=!fss; fss ? LinksBody.requestFullscreen() : document.exitFullscreen()}
+
 function zm(){
     if(scale==50){z.setAttribute("d","M10,16 h12");   scale=20; reset()}
     else{z.setAttribute("d","M10,16 h12 M16,10 v12"); scale=50; reset()}}
+
 function gy(){
-    if(!gyo){gyo=1; g1.setAttribute("d","M14,16 a1,1 0 0 0 4,0 a1,1 0 0 0 -4,0"); window.addEventListener("devicemotion", gyro )}
-    else{    gyo=0; g1.setAttribute("d","M14,15 17,18 14,21 M20,18 A8,3 0 0 0 28,15 A8,3 0 0 0 23,12 M7,12 A8,3 0 0 0 4,15 A8,3 0 0 0 8,17.3 M8,17.3 14,18 17,18"); window.removeEventListener("devicemotion", gyro )}}
+    if(!gyo){
+        gyo=1; g1.setAttribute("d","M14,16 a1,1 0 0 0 4,0 a1,1 0 0 0 -4,0");
+        window.addEventListener("devicemotion", gyro )}
+    else{
+        gyo=0; g1.setAttribute("d","M14,15 17,18 14,21 M20,18 A8,3 0 0 0 28,15 A8,3 0 0 0 23,12 M7,12 A8,3 0 0 0 4,15 A8,3 0 0 0 8,17.3 M8,17.3 14,18 17,18");
+        window.removeEventListener("devicemotion", gyro )}}
+
 function gyro(){
     if(window.orientation==  0) {alpha += event.rotationRate.beta/6000; beta  += event.rotationRate.alpha/6000}
     if(window.orientation== 90) {beta  -= event.rotationRate.beta/6000; alpha += event.rotationRate.alpha/6000}
     if(window.orientation==-90) {beta  += event.rotationRate.beta/6000; alpha -= event.rotationRate.alpha/6000}
     rotateCam()}
 
-window.addEventListener("devicemotion", ()=>{if(event.rotationRate.alpha || event.rotationRate.beta || event.rotationRate.gamma) gy0.style.visibility="visible"})
+window.addEventListener("devicemotion", ()=>{if(event.rotationRate.alpha) gy0.style.visibility="visible"})
+
+function mp(){if(map_img.style.visibility=="visible") map_img.style.visibility="hidden"; else map_img.style.visibility="visible"}
+
 </script></body>
