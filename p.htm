@@ -24,14 +24,22 @@
 <div class="arr" style="left:-23px;border-radius:14px 0 0 14px;border:1px solid black;border-right:#fff" onclick="l()"></div><font id="current">6</font> / <font id="total">10</font>
 <div class="arr" style="right:-23px;border-radius:0 14px 14px 0;border:1px solid black;border-left:#fff" onclick="r()"></div></span>
 
+<div style="top:7px;right:46px">
+<img id="v_1" class="ico" onclick="v=1; update_tex()" style="visibility: visible; right: 156px;" src="ico/1.svg">
+<img id="v_2" class="ico" onclick="v=2; update_tex()" style="visibility: visible; right: 117px;" src="ico/2.svg">
+<img id="v_3" class="ico" onclick="v=3; update_tex()" style="visibility: visible; right: 78px;" src="ico/3.svg">
+<img id="v_4" class="ico" onclick="v=4; update_tex()" style="visibility: visible; right: 39px;" src="ico/4.svg">
+<img id="v_5" class="ico" onclick="v=5; update_tex()" style="visibility: visible; right: 0px;" src="ico/5.svg">
+</div>
+
 <script> mouseIsDown=false
 alpha=beta=gyo=y=0
 scale=55
 ww=window.innerWidth; wh=window.innerHeight
 
 url=new URL(window.location.href)
-p = url.searchParams.get("p"); if(!p) p=current.innerHTML; else current.innerHTML = p 
-v = url.searchParams.get("v"); if(!v) v=1
+p = url.searchParams.get("p"); if(!p) p = current.innerHTML; else current.innerHTML = p 
+v = url.searchParams.get("v"); if(!v) v = 1
 
 scene = new THREE.Scene()
 renderer = new THREE.WebGLRenderer({ alpha: true })
@@ -81,7 +89,16 @@ function update_tex(){
                         p5.material.map = t5; p5.material.needsUpdate = true; renderer.render( scene, camera )
                         t6 = loader.load( 'img/' + p + 'u' + v + '.jpg', ()=>{
                             t6.minFilter = THREE.LinearFilter; t6.magFilter = THREE.NearestFilter; t6.generateMipmaps = false
-                            p6.material.map = t6; p6.material.needsUpdate = true; renderer.render( scene, camera )})
+                            p6.material.map = t6; p6.material.needsUpdate = true; renderer.render( scene, camera );
+                            next_p = parseInt(p) + 1
+                            if( next_p > parseInt(total.innerHTML) ) next_p = 1
+                            fetch( 'img/' + next_p +  'f'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'r'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'b'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'l'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'u'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'd'  + v + '.jpg' )
+                        })
                     })                    
                 })
             })        
@@ -146,7 +163,7 @@ function mp(){if(map_img.style.visibility=="visible") map_img.style.visibility="
 function r(){
     current.innerHTML = parseInt(current.innerHTML) + 1
     if( parseInt(current.innerHTML) > parseInt(total.innerHTML) ) current.innerHTML=1
-    p=parseInt(current.innerHTML)
+    p = parseInt(current.innerHTML)
     update_tex()}
 
 function l(){
