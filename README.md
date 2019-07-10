@@ -19,3 +19,4 @@ features:
 10. low battery usage
 11. smart scaling support
 12. embedded SVG icons
+13. cross-browser
