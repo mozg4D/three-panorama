@@ -15,3 +15,4 @@ features:
 6. fullscreen
 7. gyroscope support
 8. map support
+9. smart texture interpolation (crispy image)
