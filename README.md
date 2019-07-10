@@ -17,3 +17,5 @@ features:
 8. map support
 9. smart texture interpolation (crispy and fast)
 10. low battery usage
+11. smart scaling support
+12. embedded SVG icons
