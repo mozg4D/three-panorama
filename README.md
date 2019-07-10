@@ -20,3 +20,4 @@ features:
 11. smart scaling support
 12. embedded SVG icons
 13. cross-browser
+14. adaptive FOV
