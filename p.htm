@@ -1,8 +1,9 @@
 <!DOCTYPE html><html lang="en"></html><head><meta charset="UTF-8"><meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1"><meta name=Description content="PanoramaViewer">
 <style>.ico{width:32px;height:32px}.ico:hover{border:2px solid #fff;margin:-2px} canvas{touch-action:none} svg,img,span,div{position:absolute;touch-action:none}
-.arr{top:-1px;width:22px;height:24px;background-color:#ddd;cursor:pointer}.arr:hover{background-color:#999}.arr:active{background-color:#ccc}</style>
+.arr{top:-1px;width:22px;height:24px;background-color:#ddd;cursor:pointer}.arr:hover{background-color:#999}.arr:active{background-color:#ccc}
+.dot{opacity:0.8} .dot:hover{opacity:1}</style>
 
-</head><body id="LinksBody" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
+</head><body id="LinksBody" onmousedown="event.preventDefault()" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
 <svg style="right:7px;top:7px" onclick="fs()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
 <path style="stroke:#000;fill:none" d="M6,12 v-6 h6 M20,6 h6 v6 M26,20 v6 h-6 M12,26 h-6 v-6"></path></svg>
 
@@ -18,7 +19,10 @@
 <path fill="#666" d="M16,26 10,14 A10,10 0 0 1 9,10 A1,1 0 0 1 23,10 A10,10 0 0 1 22,14 z"></path>
 <path fill="none" stroke="#000" d="M18,22 A8,3 0 0 1 24,25 A8,3 0 0 1 8,25 A8,3 0 0 1 14,22"></path><path fill="#fff" d="M13.5,10 A1,1 0 0 1 18.5,10 A1,1 0 0 1 13.5,10"></path></svg>
 
-<img id="map_img" style="visibility:visible" src="ico/map.png">
+<div id="mapp" style="visibility:visible">
+<img id="map_img" src="ico/map.png">
+<img class="dot" onclick="p=8; update_tex()" style=left:18px;top:12px src=ico/dot.svg>
+</div>
 
 <span id="counter" style="left: calc(50% - 22px); bottom: 16px; background-color: white; font-size: 18px; padding: 2px 6px 0px; height: 22px; border: 1px solid black; visibility: visible;">
 <div class="arr" style="left:-23px;border-radius:14px 0 0 14px;border:1px solid black;border-right:#fff" onclick="l()"></div><font id="current">6</font> / <font id="total">10</font>
@@ -158,7 +162,7 @@ function gyro(){
 
 window.addEventListener("devicemotion", ()=>{if(event.rotationRate.alpha) gy0.style.visibility="visible"})
 
-function mp(){if(map_img.style.visibility=="visible") map_img.style.visibility="hidden"; else map_img.style.visibility="visible"}
+function mp(){ mapp.style.visibility=="visible" ? mapp.style.visibility="hidden" : mapp.style.visibility="visible" }
 
 function r(){
     current.innerHTML = parseInt(current.innerHTML) + 1
