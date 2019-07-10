@@ -16,3 +16,4 @@ features:
 7. gyroscope support
 8. map support
 9. smart texture interpolation (crispy and fast)
+10. low battery usage
