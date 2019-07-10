@@ -7,11 +7,11 @@ where p - panorama id; v - panorama variant (panorama rendered (photographed) fr
 example: http://mozg4d.com/p/
 
 features:
-precashing
-smart draw order
-support for panorama variants
-simple integration
-zooming
-fullscreen
-gyroscope support
-map support
+1. precashing
+2. smart draw order
+3. support for panorama variants
+4. simple integration
+5. zooming
+6. fullscreen
+7. gyroscope support
+8. map support
