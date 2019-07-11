@@ -38,6 +38,10 @@
 <img id="v_5" class="ico" onclick="v=5; update_tex()" style="visibility: visible; right: 0px;" src="ico/5.svg">
 </div>
 
+
+<img id="pp1" src="ico/jump.svg" style="top:100px;left:100px" onclick="p=2; update_tex()">
+
+
 <script> mouseIsDown=false
 alpha=beta=gyo=y=0
 scale=55
@@ -64,6 +68,8 @@ p3 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p3.position.z =  5; 
 p4 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p4.position.x = -5; p4.rotation.y =  Math.PI/2; scene.add( p4 )
 p5 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p5.position.y = -5; p5.rotation.x = -Math.PI/2; scene.add( p5 )
 p6 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p6.position.y =  5; p6.rotation.x =  Math.PI/2; scene.add( p6 )
+
+point_1 = new THREE.Vector3(1, 1, 1)
 
 update_tex()
 
@@ -140,6 +146,14 @@ function rotateCam(){
     if(beta<-1.57) beta=-1.57
 
     y = Math.abs((360-alpha*180/Math.PI) % 360)
+
+
+    camera.updateMatrixWorld()
+    p1=point_1.clone(); p1.project(camera); p1.x=(p1.x+1)/2*ww; p1.y=(1-p1.y)/2*wh
+    pp1.style.left = parseInt(p1.x - 16) + "px"
+    pp1.style.top = parseInt(p1.y - 16) + "px"
+    console.log(p1.x + "   " + p1.y)
+
 
     camera.rotation.set(beta, alpha, 0)
     renderer.render( scene, camera )}
