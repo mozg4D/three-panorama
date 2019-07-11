@@ -39,7 +39,7 @@
 </div>
 
 
-<img id="pp1" src="ico/jump.svg" style="top:100px;left:100px" onclick="p=2; update_tex()">
+<img id="pp1" src="ico/jump.svg" onclick="p=2; update_tex()">
 
 
 <script> mouseIsDown=false
@@ -70,6 +70,11 @@ p5 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p5.position.y = -5; 
 p6 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p6.position.y =  5; p6.rotation.x =  Math.PI/2; scene.add( p6 )
 
 point_1 = new THREE.Vector3(0, 0, 1)
+
+Y_axis = new THREE.Vector3( 0, 1, 0 );
+var angle = 0.5;
+
+point_1.applyAxisAngle( Y_axis, angle );
 
 update_tex()
 
@@ -148,11 +153,10 @@ function rotateCam(){
     y = Math.abs((360-alpha*180/Math.PI) % 360)
 
 
-    camera.updateMatrixWorld()
-    p1=point_1.clone(); p1.project(camera); p1.x=(p1.x+1)/2*ww; p1.y=(1-p1.y)/2*wh
-    pp1.style.left = parseInt(p1.x - 16) + "px"
-    pp1.style.top = parseInt(p1.y - 16) + "px"
-    console.log(p1.x + "   " + p1.y)
+    //camera.updateMatrixWorld()
+    pp=point_1.clone(); pp.project(camera); pp.x=(pp.x+1)/2*ww; pp.y=(1-pp.y)/2*wh
+    pp1.style.left = parseInt(pp.x - 16) + "px"
+    pp1.style.top = parseInt(pp.y - 16) + "px"
 
 
     camera.rotation.set(beta, alpha, 0)
