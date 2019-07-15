@@ -143,6 +143,7 @@ setInterval( rescale, 150)
 
 document.body.appendChild(renderer.domElement)
 
+ondragstart = (e)=>{e.preventDefault()}
 onmousedown = (e)=>{mouseIsDown=true; x_coord=e.clientX; y_coord=e.clientY}
 ontouchstart = (e)=>{mouseIsDown=true; x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}
 onmouseup = ()=>{mouseIsDown=false}
