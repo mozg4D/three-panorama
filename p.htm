@@ -38,14 +38,19 @@
 <img id="v_5" class="ico" onclick="v=5; update_tex()" style="visibility: visible; right: 0px;" src="ico/5.svg">
 </div>
 
+<div id="panorama_1" style=visibility:hidden>
+    <img id="0.3_0.5" src="ico/jump.svg" onclick="p=2; update_tex()">
+    <img id="0_0" src="ico/jump.svg" onclick="p=2; update_tex()">
+</div>
 
-<img id="pp1" src="ico/jump.svg" onclick="p=2; update_tex()">
-
+<div id="panorama_2" style=visibility:hidden>
+    <img id="1.3_1.5" src="ico/jump.svg" onclick="p=2; update_tex()">
+    <img id="0.2_0.4" src="ico/jump.svg" onclick="p=2; update_tex()">
+</div>
 
 <script> mouseIsDown=false
-alpha=beta=gyo=y=0
+alpha=beta=gyo=y=ww=wh=previous_p=0
 scale=55
-ww=window.innerWidth; wh=window.innerHeight
 
 url=new URL(window.location.href)
 p = url.searchParams.get("p"); if(!p) p = current.innerHTML; else current.innerHTML = p 
@@ -53,11 +58,12 @@ v = url.searchParams.get("v"); if(!v) v = 1
 
 scene = new THREE.Scene()
 renderer = new THREE.WebGLRenderer({ alpha: true })
-renderer.setSize(ww, wh)
 renderer.context.disable(renderer.context.DEPTH_TEST)
 
-camera = new THREE.PerspectiveCamera( Math.min( scale + 20*wh/ww, 90 ), ww/wh, 0.1, 9)
+camera = new THREE.PerspectiveCamera( Math.min( scale + 20*window.innerHeight/window.innerWidth, 90 ), window.innerWidth/window.innerHeight, 0.1, 9)
 camera.rotation.order = 'YXZ'
+
+renderer.setSize(ww, wh)
 
 plane = new THREE.PlaneBufferGeometry( 10, 10 )
 loader = new THREE.TextureLoader()
@@ -69,18 +75,15 @@ p4 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p4.position.x = -5; 
 p5 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p5.position.y = -5; p5.rotation.x = -Math.PI/2; scene.add( p5 )
 p6 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p6.position.y =  5; p6.rotation.x =  Math.PI/2; scene.add( p6 )
 
-point_1 = new THREE.Vector3(0, 0, 1)
-
-Y_axis = new THREE.Vector3( 0, 1, 0 );
-var angle = 0.5;
-
-point_1.applyAxisAngle( Y_axis, angle );
-
 update_tex()
 
 function update_tex(){
 
-    current.innerHTML = p
+    if(document.getElementById("panorama_" + previous_p)) document.getElementById("panorama_" + previous_p).style.visibility="hidden"
+
+    current.innerHTML = previous_p = p
+
+    if(document.getElementById("panorama_" + p)) document.getElementById("panorama_" + p).style.visibility="visible"
 
     if (y >= 0   && y < 45 ) {a = "f"; b = "r"; c = "b"; d = "l"; aa = p1; bb = p2; cc = p3; dd = p4}
     if (y >= 45  && y < 90 ) {a = "r"; b = "f"; c = "b"; d = "l"; aa = p2; bb = p1; cc = p3; dd = p4}
@@ -94,6 +97,9 @@ function update_tex(){
     t1 = loader.load( 'img/' + p +  a  + v + '.jpg', ()=>{
         t1.minFilter = THREE.LinearFilter; t1.magFilter = THREE.NearestFilter; t1.generateMipmaps = false
         aa.material.map = t1; aa.material.needsUpdate = true; renderer.render( scene, camera )
+
+        update_contents()
+
         t2 = loader.load( 'img/' + p +  b  + v + '.jpg', ()=>{
             t2.minFilter = THREE.LinearFilter; t2.magFilter = THREE.NearestFilter; t2.generateMipmaps = false
             bb.material.map = t2; bb.material.needsUpdate = true; renderer.render( scene, camera )
@@ -129,6 +135,7 @@ function rescale(){
     if(ww!=window.innerWidth || wh!=window.innerHeight) {ww=window.innerWidth; wh=window.innerHeight
     renderer.setSize(ww, wh)
     camera.aspect = ww / wh
+    update_contents()
     reset()}}
 
 function reset(){
@@ -152,12 +159,9 @@ function rotateCam(){
 
     y = Math.abs((360-alpha*180/Math.PI) % 360)
 
-
     //camera.updateMatrixWorld()
-    pp=point_1.clone(); pp.project(camera); pp.x=(pp.x+1)/2*ww; pp.y=(1-pp.y)/2*wh
-    pp1.style.left = parseInt(pp.x - 16) + "px"
-    pp1.style.top = parseInt(pp.y - 16) + "px"
 
+    update_contents()
 
     camera.rotation.set(beta, alpha, 0)
     renderer.render( scene, camera )}
@@ -185,4 +189,19 @@ function gyro(){
 window.addEventListener("devicemotion", ()=>{if(event.rotationRate.alpha) gy0.style.visibility="visible"})
 
 function mp(){ mapp.style.visibility=="visible" ? mapp.style.visibility="hidden" : mapp.style.visibility="visible" }
+
+point = new THREE.Vector3(0, 0, 1)
+Y_axis = new THREE.Vector3( 0, 1, 0 )
+X_axis = new THREE.Vector3( 1, 0, 0 )
+
+function update_contents(){
+
+    
+
+    //point.applyAxisAngle( Y_axis, 0.5 );
+
+    //pp=point_1.clone(); pp.project(camera); pp.x=(pp.x+1)/2*ww; pp.y=(1-pp.y)/2*wh
+    //pp1.style.left = parseInt(pp.x - 16) + "px"
+    //pp1.style.top = parseInt(pp.y - 16) + "px"
+}
 </script></body>
