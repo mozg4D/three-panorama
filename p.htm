@@ -202,7 +202,7 @@ function update_contents(){
                 pp.applyAxisAngle( Y_axis, alp)
                 pp.applyAxisAngle( X_axis, bet)
 
-                if(Math.abs(alpha - alp) < 1.57 && Math.abs(beta - bet) < 1){
+                if(Math.abs(Math.abs((alpha - Math.PI) % (2*Math.PI)) - Math.PI + alp) < 1.57 && Math.abs(beta - bet) < 1){
                     pp.project(camera)
                     pp.x=(pp.x+1)/2*ww
                     pp.y=(1-pp.y)/2*wh
