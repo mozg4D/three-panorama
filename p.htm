@@ -4,6 +4,7 @@
 .dot{opacity:0.6} .dot:hover{opacity:1}</style>
 
 </head><body id="LinksBody" onmousedown="event.preventDefault()" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
+<div style="width:100vw;z-index:-1;text-align:center;padding:calc(50vh - 10px) 0;font-size:18px">loading panorama...</div>
 <svg style="right:7px;top:7px" onclick="fs()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
 <path style="stroke:#000;fill:none" d="M6,12 v-6 h6 M20,6 h6 v6 M26,20 v6 h-6 M12,26 h-6 v-6"></path></svg>
 
@@ -196,7 +197,7 @@ X_axis = new THREE.Vector3( 1, 0, 0 )
 
 function update_contents(){
 
-    
+
 
     //point.applyAxisAngle( Y_axis, 0.5 );
 
