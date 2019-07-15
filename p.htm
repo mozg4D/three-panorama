@@ -3,7 +3,7 @@
 .arr{top:-1px;width:22px;height:24px;background-color:#ddd;cursor:pointer}.arr:hover{background-color:#999}.arr:active{background-color:#ccc}
 .dot{opacity:0.6} .dot:hover{opacity:1}</style>
 
-</head><body id="LinksBody" onmousedown="event.preventDefault()" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
+</head><body id="LinksBody" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
 <div style="width:100vw;z-index:-1;text-align:center;padding:calc(50vh - 10px) 0;font-size:18px">loading panorama...</div>
 <svg style="right:7px;top:7px" onclick="fs()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
 <path style="stroke:#000;fill:none" d="M6,12 v-6 h6 M20,6 h6 v6 M26,20 v6 h-6 M12,26 h-6 v-6"></path></svg>
@@ -40,17 +40,12 @@
 </div>
 
 <div id="panorama_1" style=visibility:hidden>
-    <img id="0.3_0.5" src="ico/jump.svg" onclick="p=2; update_tex()">
-    <img id="0_0" src="ico/jump.svg" onclick="p=2; update_tex()">
-</div>
-
-<div id="panorama_2" style=visibility:hidden>
-    <img id="1.3_1.5" src="ico/jump.svg" onclick="p=2; update_tex()">
-    <img id="0.2_0.4" src="ico/jump.svg" onclick="p=2; update_tex()">
+    <img id=".19_-0.23" src="ico/jump.svg" onclick="p=2; update_tex()">
 </div>
 
 <script> mouseIsDown=false
 alpha=beta=gyo=y=ww=wh=previous_p=0
+ww = window.innerWidth; wh = window.innerHeight
 scale=55
 
 url=new URL(window.location.href)
@@ -61,7 +56,7 @@ scene = new THREE.Scene()
 renderer = new THREE.WebGLRenderer({ alpha: true })
 renderer.context.disable(renderer.context.DEPTH_TEST)
 
-camera = new THREE.PerspectiveCamera( Math.min( scale + 20*window.innerHeight/window.innerWidth, 90 ), window.innerWidth/window.innerHeight, 0.1, 9)
+camera = new THREE.PerspectiveCamera( Math.min( scale + 20*wh/ww, 90 ), ww/wh, 0.1, 9)
 camera.rotation.order = 'YXZ'
 
 renderer.setSize(ww, wh)
@@ -160,8 +155,6 @@ function rotateCam(){
 
     y = Math.abs((360-alpha*180/Math.PI) % 360)
 
-    //camera.updateMatrixWorld()
-
     update_contents()
 
     camera.rotation.set(beta, alpha, 0)
@@ -197,12 +190,25 @@ X_axis = new THREE.Vector3( 1, 0, 0 )
 
 function update_contents(){
 
+    elem = document.getElementById("panorama_" + p)
+    if(elem){
+        for(i=0;i<elem.childNodes.length;i++){
+            if(elem.childNodes[i].id){
 
+                alp = parseFloat(-elem.childNodes[i].id.split('_')[0])
+                bet = parseFloat( elem.childNodes[i].id.split('_')[1])
+                pp = point.clone()
+                pp.applyAxisAngle( Y_axis, alp)
+                pp.applyAxisAngle( X_axis, bet)
 
-    //point.applyAxisAngle( Y_axis, 0.5 );
-
-    //pp=point_1.clone(); pp.project(camera); pp.x=(pp.x+1)/2*ww; pp.y=(1-pp.y)/2*wh
-    //pp1.style.left = parseInt(pp.x - 16) + "px"
-    //pp1.style.top = parseInt(pp.y - 16) + "px"
+                if(Math.abs(alpha - alp) < 1.57 && Math.abs(beta - bet) < 1){
+                    pp.project(camera)
+                    pp.x=(pp.x+1)/2*ww; pp.y=(1-pp.y)/2*wh
+                    elem.childNodes[i].style.left = parseInt(pp.x - 16) + "px"
+                    elem.childNodes[i].style.top = parseInt(pp.y - 16) + "px"    
+                }
+            }
+        }
+    }
 }
 </script></body>
