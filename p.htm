@@ -90,25 +90,25 @@ function update_tex(){
     if (y >= 270 && y < 315) {a = "l"; b = "f"; c = "r"; d = "b"; aa = p4; bb = p1; cc = p2; dd = p3}
     if (y >= 315 && y < 360) {a = "f"; b = "l"; c = "r"; d = "b"; aa = p1; bb = p4; cc = p2; dd = p3}
 
-    t1 = loader.load( 'img/' + p +  a  + v + '.jpg', ()=>{
+    t1 = loader.load( 'img/' + p +  a  + v + '.jpg', function(){
         t1.minFilter = THREE.LinearFilter; t1.magFilter = THREE.NearestFilter; t1.generateMipmaps = false
         aa.material.map = t1; aa.material.needsUpdate = true; renderer.render( scene, camera )
 
         update_contents()
 
-        t2 = loader.load( 'img/' + p +  b  + v + '.jpg', ()=>{
+        t2 = loader.load( 'img/' + p +  b  + v + '.jpg', function(){
             t2.minFilter = THREE.LinearFilter; t2.magFilter = THREE.NearestFilter; t2.generateMipmaps = false
             bb.material.map = t2; bb.material.needsUpdate = true; renderer.render( scene, camera )
-            t3 = loader.load( 'img/' + p +  c  + v + '.jpg', ()=>{
+            t3 = loader.load( 'img/' + p +  c  + v + '.jpg', function(){
                 t3.minFilter = THREE.LinearFilter; t3.magFilter = THREE.NearestFilter; t3.generateMipmaps = false
                 cc.material.map = t3; cc.material.needsUpdate = true; renderer.render( scene, camera )
-                t4 = loader.load( 'img/' + p +  d  + v + '.jpg', ()=>{
+                t4 = loader.load( 'img/' + p +  d  + v + '.jpg', function(){
                     t4.minFilter = THREE.LinearFilter; t4.magFilter = THREE.NearestFilter; t4.generateMipmaps = false
                     dd.material.map = t4; dd.material.needsUpdate = true; renderer.render( scene, camera )
-                    t5 = loader.load( 'img/' + p + 'd' + v + '.jpg', ()=>{
+                    t5 = loader.load( 'img/' + p + 'd' + v + '.jpg', function(){
                         t5.minFilter = THREE.LinearFilter; t5.magFilter = THREE.NearestFilter; t5.generateMipmaps = false
                         p5.material.map = t5; p5.material.needsUpdate = true; renderer.render( scene, camera )
-                        t6 = loader.load( 'img/' + p + 'u' + v + '.jpg', ()=>{
+                        t6 = loader.load( 'img/' + p + 'u' + v + '.jpg', function(){
                             t6.minFilter = THREE.LinearFilter; t6.magFilter = THREE.NearestFilter; t6.generateMipmaps = false
                             p6.material.map = t6; p6.material.needsUpdate = true; renderer.render( scene, camera );
                             next_p = parseInt(p) + 1
@@ -187,7 +187,7 @@ function gyro(){
     if(window.orientation==-90) {beta  += event.rotationRate.beta/4000; alpha -= event.rotationRate.alpha/4000}
     rotateCam()}
 
-window.addEventListener("devicemotion", ()=>{if(event.rotationRate.alpha) gy0.style.visibility="visible"})
+window.addEventListener("devicemotion", function(){if(event.rotationRate.alpha) gy0.style.visibility="visible"})
 
 function mp(){ mapp.style.visibility=="visible" ? mapp.style.visibility="hidden" : mapp.style.visibility="visible" }
 
