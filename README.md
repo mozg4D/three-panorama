@@ -1,6 +1,6 @@
 # three.js based cubic panorama
 
-usage: <iframe src="p.htm?p=2&v=3"></iframe>
+usage: <iframe id="panorama_player" src="p.htm?p=2&v=3"></iframe>
 
 where p - panorama id; v - panorama variant (panorama rendered (photographed) from same location point but at different time or in differemt conditions)
 
@@ -19,5 +19,7 @@ features:
 10. low battery usage
 11. smart scaling support
 12. embedded SVG icons
-13. cross-browser
+13. cross-browser (except iOs; working on it)
 14. adaptive FOV
+15. transition points support
+16. any html elements on panorama (requires setting latitude and longitude)
