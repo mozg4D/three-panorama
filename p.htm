@@ -143,12 +143,12 @@ setInterval( rescale, 150)
 
 document.body.appendChild(renderer.domElement)
 
-ondragstart = (e)=>{e.preventDefault()}
-onmousedown = (e)=>{mouseIsDown=true; x_coord=e.clientX; y_coord=e.clientY}
-ontouchstart = (e)=>{e.preventDefault(); mouseIsDown=true; x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}
-onmouseup = ()=>{mouseIsDown=false}
-onmousemove = (e)=>{if(mouseIsDown){alpha -= (x_coord-e.clientX)/600; beta -= (y_coord-e.clientY)/600; rotateCam(); x_coord=e.clientX; y_coord=e.clientY}}
-ontouchmove = (e)=>{e.preventDefault(); if(mouseIsDown){alpha -= (x_coord-e.touches[0].clientX)/130; beta -= (y_coord-e.touches[0].clientY)/200; rotateCam(); x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}}
+ondragstart = function(e){e.preventDefault()}
+onmousedown = function(e){mouseIsDown=true; x_coord=e.clientX; y_coord=e.clientY}
+ontouchstart = function(e){e.preventDefault(); mouseIsDown=true; x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}
+onmouseup = function(){mouseIsDown=false}
+onmousemove = function(e){if(mouseIsDown){alpha -= (x_coord-e.clientX)/600; beta -= (y_coord-e.clientY)/600; rotateCam(); x_coord=e.clientX; y_coord=e.clientY}}
+ontouchmove = function(e){e.preventDefault(); if(mouseIsDown){alpha -= (x_coord-e.touches[0].clientX)/130; beta -= (y_coord-e.touches[0].clientY)/200; rotateCam(); x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}}
 
 function rotateCam(){
     if(beta> 1.57) beta= 1.57
