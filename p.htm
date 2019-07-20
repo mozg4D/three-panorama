@@ -129,16 +129,18 @@ function update_tex(){
     })
 }
 
-parent.onresize = function rescale(){
+parent.onresize = function() {rescale()}
+
+function rescale(){
     if(ww!=window.innerWidth || wh!=window.innerHeight) {ww=window.innerWidth; wh=window.innerHeight
     renderer.setSize(ww, wh)
     camera.aspect = ww / wh
-    update_contents()
     reset()}}
 
 function reset(){
     camera.fov = Math.min( scale + 25*wh/ww, 90 )
     camera.updateProjectionMatrix()
+    update_contents()
     renderer.render( scene, camera )}
 
 document.body.appendChild(renderer.domElement)
@@ -165,23 +167,27 @@ default_iframe_width  = parent.panorama_player.style.width
 default_iframe_height = parent.panorama_player.style.heigth
 default_iframe_zIndex = parent.panorama_player.style.zIndex
 
-function fs(){fss=!fss;
+function fs(){ fss=!fss
     if(fss){
-        if (LinksBody.requestFullscreen) LinksBody.requestFullscreen()
-        else if (LinksBody.webkitRequestFullscreen) LinksBody.webkitRequestFullscreen()
+        if (LinksBody.requestFullscreen) {LinksBody.requestFullscreen()}
+        else if (LinksBody.webkitRequestFullscreen) {LinksBody.webkitRequestFullscreen()}
         else { //if fullscreen API not supported (iphone)
             parent.panorama_player.style.width="100%"
             parent.panorama_player.style.heigth="100%"
             parent.panorama_player.style.zIndex="100"}
         }
-    else{
-        if (document.exitFullscreen) document.exitFullscreen()
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen()
+    if(!fss){
+        if (document.exitFullscreen) {document.exitFullscreen()}
+        else if (document.webkitExitFullscreen) {document.webkitExitFullscreen()}
         else { //if fullscreen API not supported (iphone)
             parent.panorama_player.style.width  = default_iframe_width
             parent.panorama_player.style.heigth = default_iframe_height
-            parent.panorama_player.style.zIndex = default_iframe_zIndex}}
+            parent.panorama_player.style.zIndex = default_iframe_zIndex}
         }
+    }
+
+document.addEventListener("fullscreenchange",       function(){ setTimeout(function(){ rescale() }, 50) })
+document.addEventListener("webkitfullscreenchange", function(){ setTimeout(function(){ rescale() }, 50) })
 
 function zm(){
     if(scale==55){z.setAttribute("d","M10,16 h12");   scale=20; reset()}
