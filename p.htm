@@ -43,7 +43,7 @@
     <img id=".19_-0.23" class="jump" src="ico/jump.svg" onclick="p=2; update_tex()">
 </div>
 
-<script> mouseIsDown=false
+<script> mouseIsDown=fss=false
 alpha=beta=gyo=y=ww=wh=previous_p=0
 ww = window.innerWidth; wh = window.innerHeight
 scale=55
@@ -161,7 +161,13 @@ function rotateCam(){
     camera.rotation.set(beta, alpha, 0)
     renderer.render( scene, camera )}
 
-fss=false; function fs(){fss=!fss; fss ? LinksBody.requestFullscreen() : document.exitFullscreen()}
+function fs(){fss=!fss;
+    if(fss){
+        if (LinksBody.requestFullscreen) LinksBody.requestFullscreen()
+        if (LinksBody.webkitRequestFullscreen) LinksBody.webkitRequestFullscreen()}
+    else{
+        if (document.exitFullscreen) document.exitFullscreen()
+        if (document.webkitExitFullscreen) document.webkitExitFullscreen()}}
 
 function zm(){
     if(scale==55){z.setAttribute("d","M10,16 h12");   scale=20; reset()}
