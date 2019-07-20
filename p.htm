@@ -40,7 +40,7 @@
 </div>
 
 <div id="panorama_1" style=visibility:hidden>
-    <img id=".19_-0.23" class="jump" src="ico/jump.svg" onclick="p=2; update_tex()">
+    <img data-alpha=".19" data-beta="-0.23" class="jump" src="ico/jump.svg" onclick="p=2; update_tex()">
 </div>
 
 <script> mouseIsDown=fss=false
@@ -220,10 +220,10 @@ function update_contents(){
     elem = document.getElementById("panorama_" + p)
     if(elem){
         for(i=0;i<elem.childNodes.length;i++){
-            if(elem.childNodes[i].id){
+            if(elem.childNodes[i].dataset){
 
-                alp = parseFloat(-elem.childNodes[i].id.split('_')[0])
-                bet = parseFloat( elem.childNodes[i].id.split('_')[1])
+                alp = parseFloat(-elem.childNodes[i].dataset.alpha)
+                bet = parseFloat( elem.childNodes[i].dataset.beta)
                 pp = point.clone()
                 pp.applyAxisAngle( Y_axis, alp)
                 pp.applyAxisAngle( X_axis, bet)
