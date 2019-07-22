@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"></html><head><meta charset="UTF-8"><meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1"><meta name=Description content="PanoramaViewer">
 <style>.ico{width:32px;height:32px}.ico:hover{border:2px solid #fff;margin:-2px} svg,img,span,div{position:absolute;touch-action:none} canvas{touch-action:none} html, body{touch-action: auto}
 .arr{top:-1px;width:22px;height:24px;background-color:#ddd;cursor:pointer}.arr:hover{background-color:#999}.arr:active{background-color:#ccc}
-.dot{opacity:0.6} .dot:hover{opacity:1;border:2px solid #fff;margin:-2px;border-radius:12px} .jump:hover{border:2px solid #fff;margin:-2px;border-radius:18px}</style>
+.dot{opacity:0.6} .dot:hover{opacity:1;border:2px solid #fff;margin:-2px;border-radius:12px} .jump:hover{opacity:1;border:2px solid #fff;margin:-2px;border-radius:18px}</style>
 
 </head><body id="LinksBody" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
 <div style="width:100vw;z-index:-1;text-align:center;padding:calc(50vh - 10px) 0;font-size:18px">loading panorama...</div>
@@ -47,6 +47,9 @@
 alpha=beta=gyo=y=ww=wh=previous_p=0
 ww = window.innerWidth; wh = window.innerHeight
 scale=55
+
+Y_axis = new THREE.Vector3( 0, 1, 0 )
+X_axis = new THREE.Vector3( 1, 0, 0 )
 
 url=new URL(window.location.href)
 p = url.searchParams.get("p"); if(!p) p = current.innerHTML; else current.innerHTML = p 
@@ -164,26 +167,27 @@ function rotateCam(){
     camera.rotation.set(beta, alpha, 0)
     renderer.render( scene, camera )}
 
-default_iframe_width  = parent.panorama_player.style.width
-default_iframe_height = parent.panorama_player.style.heigth
-default_iframe_zIndex = parent.panorama_player.style.zIndex
+default_iframe_width  = parent.document.getElementById("panorama_player").style.width
+default_iframe_height = parent.document.getElementById("panorama_player").style.height
+default_iframe_zIndex = parent.document.getElementById("panorama_player").style.zIndex
 
 function fs(){ fss=!fss
     if(fss){
         if (LinksBody.requestFullscreen) {LinksBody.requestFullscreen()}
         else if (LinksBody.webkitRequestFullscreen) {LinksBody.webkitRequestFullscreen()}
         else { //if fullscreen API not supported (iphone)
-            parent.panorama_player.style.width="100%"
-            parent.panorama_player.style.heigth="100%"
-            parent.panorama_player.style.zIndex="100"}
+            parent.document.getElementById("panorama_player").style.width="100%"
+            parent.document.getElementById("panorama_player").style.height="100%"
+            parent.document.getElementById("panorama_player").style.zIndex="100"}
         }
     if(!fss){
         if (document.exitFullscreen) {document.exitFullscreen()}
         else if (document.webkitExitFullscreen) {document.webkitExitFullscreen()}
         else { //if fullscreen API not supported (iphone)
-            parent.panorama_player.style.width  = default_iframe_width
-            parent.panorama_player.style.heigth = default_iframe_height
-            parent.panorama_player.style.zIndex = default_iframe_zIndex}
+            parent.document.getElementById("panorama_player").style.width  = default_iframe_width
+            parent.document.getElementById("panorama_player").style.height = default_iframe_height
+            parent.document.getElementById("panorama_player").style.zIndex = default_iframe_zIndex
+            }
         }
     }
 
@@ -212,10 +216,6 @@ window.addEventListener("devicemotion", function(){if(event.rotationRate.alpha) 
 
 function mp(){ mapp.style.visibility=="visible" ? mapp.style.visibility="hidden" : mapp.style.visibility="visible" }
 
-point = new THREE.Vector3(0, 0, 1)
-Y_axis = new THREE.Vector3( 0, 1, 0 )
-X_axis = new THREE.Vector3( 1, 0, 0 )
-
 function update_contents(){
 
     elem = document.getElementById("panorama_" + p)
@@ -225,7 +225,7 @@ function update_contents(){
 
                 alp = parseFloat(-elem.childNodes[i].dataset.alpha)
                 bet = parseFloat( elem.childNodes[i].dataset.beta)
-                pp = point.clone()
+                pp = new THREE.Vector3(0, 0, 1)
                 pp.applyAxisAngle( Y_axis, alp)
                 pp.applyAxisAngle( X_axis, bet)
 
