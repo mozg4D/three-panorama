@@ -5,6 +5,13 @@
 
 </head><body id="LinksBody" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
 <div style="width:100vw;z-index:-1;text-align:center;padding:calc(50vh - 10px) 0;font-size:18px">loading panorama...</div>
+
+<div id="mapp" style="visibility:hidden">
+<img id="map_img" src="ico/map.png">
+<img style=left:18px;top:12px class="dot" onclick="p=8; update_tex()" src=ico/dot.svg>
+<img style=left:62px;top:92px class="dot" onclick="p=1; update_tex()" src=ico/dot.svg>
+</div>
+
 <svg style="right:7px;top:7px" onclick="fs()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
 <path style="stroke:#000;fill:none" d="M6,12 v-6 h6 M20,6 h6 v6 M26,20 v6 h-6 M12,26 h-6 v-6"></path></svg>
 
@@ -19,12 +26,6 @@
 <svg id="map" style="right:7px;top:85px" onclick="mp()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
 <path fill="#666" d="M16,26 10,14 A10,10 0 0 1 9,10 A1,1 0 0 1 23,10 A10,10 0 0 1 22,14 z"></path>
 <path fill="none" stroke="#000" d="M18,22 A8,3 0 0 1 24,25 A8,3 0 0 1 8,25 A8,3 0 0 1 14,22"></path><path fill="#fff" d="M13.5,10 A1,1 0 0 1 18.5,10 A1,1 0 0 1 13.5,10"></path></svg>
-
-<div id="mapp" style="visibility:visible">
-<img id="map_img" src="ico/map.png">
-<img style=left:18px;top:12px class="dot" onclick="p=8; update_tex()" src=ico/dot.svg>
-<img style=left:62px;top:92px class="dot" onclick="p=1; update_tex()" src=ico/dot.svg>
-</div>
 
 <span id="counter" style="left: calc(50% - 22px); bottom: 16px; background-color: white; font-size: 18px; padding: 2px 6px 0px; height: 22px; border: 1px solid black; visibility: visible;">
 <div class="arr" style="left:-23px;border-radius:14px 0 0 14px;border:1px solid black;border-right:#fff" onclick="if( p-- < 2 ) p = parseInt(total.innerHTML); update_tex()"></div>
@@ -43,8 +44,8 @@
     <img data-alpha=".19" data-beta="-0.23" class="jump" src="ico/jump.svg" onclick="p=2; update_tex()">
 </div>
 
-<script> mouseIsDown=fss=false
-alpha=beta=gyo=y=ww=wh=previous_p=0
+<script> mouseIsDown=fss=gyo=false
+alpha=beta=y=ww=wh=previous_p=0
 ww = window.innerWidth; wh = window.innerHeight
 scale=55
 
@@ -153,7 +154,9 @@ onmousedown = function(e){mouseIsDown=true; x_coord=e.clientX; y_coord=e.clientY
 ontouchstart = function(e){e.preventDefault(); mouseIsDown=true; x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}
 onmouseup = function(){mouseIsDown=false}
 onmousemove = function(e){if(mouseIsDown){alpha -= (x_coord-e.clientX)/600; beta -= (y_coord-e.clientY)/600; rotateCam(); x_coord=e.clientX; y_coord=e.clientY}}
-ontouchmove = function(e){e.preventDefault(); if(mouseIsDown){alpha -= (x_coord-e.touches[0].clientX)/130; beta -= (y_coord-e.touches[0].clientY)/200; rotateCam(); x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}}
+document.body.addEventListener('touchmove', function(e){
+    e.preventDefault(); if(mouseIsDown){alpha -= (x_coord-e.touches[0].clientX)/130; beta -= (y_coord-e.touches[0].clientY)/200; rotateCam(); x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}},
+    { passive: false })
 
 function rotateCam(){
     if(beta> 1.57) beta= 1.57
@@ -166,15 +169,14 @@ function rotateCam(){
     camera.rotation.set(beta, alpha, 0)
     renderer.render( scene, camera )}
 
+
 function fs(){ fss=!fss
     if(fss){
-        if (LinksBody.requestFullscreen) {LinksBody.requestFullscreen()}
-        else if (LinksBody.webkitRequestFullscreen) {LinksBody.webkitRequestFullscreen()}
-    if(!fss){
-        if (document.exitFullscreen) {document.exitFullscreen()}
-        else if (document.webkitExitFullscreen) {document.webkitExitFullscreen()}
-        }
-    }}
+        if (LinksBody.requestFullscreen) LinksBody.requestFullscreen()
+        else if (LinksBody.webkitRequestFullscreen) LinksBody.webkitRequestFullscreen()}
+    else{
+        if (document.exitFullscreen) document.exitFullscreen()
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen()}}
 
 document.addEventListener("fullscreenchange",       function(){ setTimeout(function(){ rescale() }, 50) })
 document.addEventListener("webkitfullscreenchange", function(){ setTimeout(function(){ rescale() }, 50) })
@@ -183,13 +185,11 @@ function zm(){
     if(scale==55){z.setAttribute("d","M10,16 h12");   scale=20; reset()}
     else{z.setAttribute("d","M10,16 h12 M16,10 v12"); scale=55; reset()}}
 
-function gy(){
-    if(!gyo){
-        gyo=1; g1.setAttribute("d","M14,16 a1,1 0 0 0 4,0 a1,1 0 0 0 -4,0");
-        window.addEventListener("devicemotion", gyro )}
-    else{
-        gyo=0; g1.setAttribute("d","M14,15 17,18 14,21 M20,18 A8,3 0 0 0 28,15 A8,3 0 0 0 23,12 M7,12 A8,3 0 0 0 4,15 A8,3 0 0 0 8,17.3 M8,17.3 14,18 17,18");
-        window.removeEventListener("devicemotion", gyro )}}
+window.addEventListener("devicemotion", gyro )
+
+function gy(){ gyo=!gyo
+    if(!gyo) window.addEventListener(   "devicemotion", gyro )
+    else     window.removeEventListener("devicemotion", gyro )}
 
 function gyro(){
     if(window.orientation==  0) {alpha += event.rotationRate.beta/4000; beta  += event.rotationRate.alpha/4000}
