@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"></html><head><meta charset="UTF-8"><meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1"><meta name=Description content="PanoramaViewer">
 <style>.ico{width:32px;height:32px}.ico:hover{border:2px solid #fff;margin:-2px} svg,img,span,div{position:absolute;touch-action:none} canvas{touch-action:none}
 .arr{top:-1px;width:22px;height:24px;background-color:#ddd;cursor:pointer}.arr:hover{background-color:#999}.arr:active{background-color:#ccc}
-.dot{opacity:0.6} .dot:hover{opacity:1;border:2px solid #fff;margin:-2px;border-radius:12px} .jump:hover{opacity:1;border:2px solid #fff;margin:-2px;border-radius:18px}</style>
+.dot{opacity:0.6} .dot:hover{opacity:1;border:2px solid #fff;margin:-2px;border-radius:12px} .jump:hover{opacity:1;border:2px solid #fff;margin:-2px;border-radius:17px}</style>
 
 </head><body id="LinksBody" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
 <div style="width:100vw;z-index:-1;text-align:center;padding:calc(50vh - 10px) 0;font-size:18px">loading panorama...</div>
@@ -27,10 +27,10 @@
 <path fill="#666" d="M16,26 10,14 A10,10 0 0 1 9,10 A1,1 0 0 1 23,10 A10,10 0 0 1 22,14 z"></path>
 <path fill="none" stroke="#000" d="M18,22 A8,3 0 0 1 24,25 A8,3 0 0 1 8,25 A8,3 0 0 1 14,22"></path><path fill="#fff" d="M13.5,10 A1,1 0 0 1 18.5,10 A1,1 0 0 1 13.5,10"></path></svg>
 
-<span id="counter" style="left: calc(50% - 22px); bottom: 16px; background-color: white; font-size: 18px; padding: 2px 6px 0px; height: 22px; border: 1px solid black; visibility: visible;">
-<div class="arr" style="left:-23px;border-radius:14px 0 0 14px;border:1px solid black;border-right:#fff" onclick="if( p-- < 2 ) p = parseInt(total.innerHTML); update_tex()"></div>
-<font id="current">6</font> / <font id="total">10</font>
-<div class="arr" style="right:-23px;border-radius:0 14px 14px 0;border:1px solid black;border-left:#fff" onclick="if( p++ > parseInt(total.innerHTML)-1 ) p=1; update_tex()"></div></span>
+<span id="counter" style="left: calc(50% - 22px); bottom: 16px; background-color: white; font-size: 18px; padding: 2px 6px; height:21px; border: 1px solid black; visibility: visible;">
+<div class="arr" style="height:25px;left:-23px;border-radius:12px 0 0 12px;border:1px solid black;border-right:#fff" onclick="if( p-- < 2 ) p = parseInt(total.innerHTML); update_tex()"></div>
+<font id="current">6</font>&nbsp;/&nbsp;<font id="total">10</font>
+<div class="arr" style="height:25px;right:-22px;border-radius:0 12px 12px 0;border:1px solid black;border-left:#fff" onclick="if( p++ > parseInt(total.innerHTML)-1 ) p=1; update_tex()"></div></span>
 
 <div style="top:7px;right:46px">
 <img id="v_1" class="ico" onclick="v=1; update_tex()" style="visibility: visible; right: 156px;" src="ico/1.svg">
