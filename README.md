@@ -19,7 +19,7 @@ features:
 10. low battery usage
 11. smart scaling support
 12. embedded SVG icons
-13. cross-browser (except iOs; working on it)
+13. cross-browser (chrome, safari, firefox, edge; IOs (including 32 and 64 bit iPhones) , android)
 14. adaptive FOV
 15. transition points support
 16. any html elements on panorama (requires setting latitude and longitude)
