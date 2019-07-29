@@ -124,14 +124,7 @@ function update_tex(){
                             fetch( 'img/' + next_p +  'b'  + v + '.jpg' )
                             fetch( 'img/' + next_p +  'l'  + v + '.jpg' )
                             fetch( 'img/' + next_p +  'u'  + v + '.jpg' )
-                            fetch( 'img/' + next_p +  'd'  + v + '.jpg' )
-                        })
-                    })                    
-                })
-            })        
-        })
-    })
-}
+                            fetch( 'img/' + next_p +  'd'  + v + '.jpg' ) })})})})})})}
 
 parent.onresize = function() {rescale()}
 
@@ -201,7 +194,6 @@ window.addEventListener("devicemotion", function(){if(event.rotationRate.alpha) 
 function mp(){ mapp.style.visibility=="visible" ? mapp.style.visibility="hidden" : mapp.style.visibility="visible" }
 
 function update_contents(){
-
     elem = document.getElementById("panorama_" + p)
     if(elem){
         for(i=0;i<elem.childNodes.length;i++){
@@ -218,10 +210,5 @@ function update_contents(){
                     pp.x=(pp.x+1)/2*ww
                     pp.y=(1-pp.y)/2*wh
                     elem.childNodes[i].style.left = parseInt(pp.x - 16) + "px"
-                    elem.childNodes[i].style.top  = parseInt(pp.y - 16) + "px"
-                }
-            }
-        }
-    }
-}
+                    elem.childNodes[i].style.top  = parseInt(pp.y - 16) + "px"}}}}}
 </script></body>
