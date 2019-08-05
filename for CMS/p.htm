@@ -1,0 +1,213 @@
+<!DOCTYPE html><html lang="en"></html><head><meta charset="UTF-8"><meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1"><meta name=Description content="PanoramaViewer">
+<style>.ico{width:32px;height:32px}.ico:hover{border:2px solid #fff;margin:-2px} svg,img,span,div{position:absolute;touch-action:none} canvas{touch-action:none}
+.arr{top:-1px;width:22px;height:24px;background-color:#ddd;cursor:pointer}.arr:hover{background-color:#999}.arr:active{background-color:#ccc}
+.dot{opacity:0.6} .dot:hover{opacity:1;border:2px solid #fff;margin:-2px;border-radius:12px} .jump:hover{opacity:1;border:2px solid #fff;margin:-2px;border-radius:17px}</style>
+
+</head><body id="LinksBody" style="margin:0;background:#ddd;position:fixed;overflow:hidden;cursor:pointer;user-select:none;-webkit-tap-highlight-color:rgba(0,0,0,0);font-family:helvetica">
+<div style="width:100vw;z-index:-1;text-align:center;padding:calc(50vh - 10px) 0;font-size:18px">loading panorama...</div>
+
+<div id="mapp" style="visibility:hidden">
+<img id="map_img" src="">
+<img style=left:18px;top:12px class="dot" onclick="p=8; update_tex()" src=ico/dot.svg>
+<img style=left:62px;top:92px class="dot" onclick="p=1; update_tex()" src=ico/dot.svg>
+</div>
+
+<svg id="fsc" style="right:7px;top:7px" onclick="fs()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
+<path style="stroke:#000;fill:none" d="M6,12 v-6 h6 M20,6 h6 v6 M26,20 v6 h-6 M12,26 h-6 v-6"></path></svg>
+
+<svg id="zom" style="right:7px;top:46px" onclick="zm()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
+<path style="stroke:#000;fill:none" id="z" d="M10,16 h12 M16,10 v12"></path></svg>
+
+<svg  id="gy0" style="right:7px;top:124px;visibility:hidden" onclick="gy()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
+<path style="stroke:#000;fill:none" d="M9.5,27.5 9.5,4.5 10.5,3.5 21.5,3.5 22.5,4.5 22.5,27.5 21.5,28.5 10.5,28.5 z M9,6.5 23,6.5 M 9,24.5 23,24.5 M14,26.5 18,26.5"></path>
+<path id="g1" style="stroke:#000;fill:none" d="M14,15 17,18 14,21 M20,18 A8,3 0 0 0 28,15 A8,3 0 0 0 23,12 M7,12 A8,3 0 0 0 4,15 A8,3 0 0 0 8,17.3 M8,17.3 14,18 17,18"></path></svg>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/107/three.min.js"></script>
+
+<svg id="map" style="right:7px;top:85px;visibility:hidden" onclick="mp()" class="ico"><path style="stroke:#ddd;fill:#fff" d="M0.5,0.5 31.5,0.5 31.5,31.5 0.5,31.5Z"></path>
+<path fill="#666" d="M16,26 10,14 A10,10 0 0 1 9,10 A1,1 0 0 1 23,10 A10,10 0 0 1 22,14 z"></path>
+<path fill="none" stroke="#000" d="M18,22 A8,3 0 0 1 24,25 A8,3 0 0 1 8,25 A8,3 0 0 1 14,22"></path><path fill="#fff" d="M13.5,10 A1,1 0 0 1 18.5,10 A1,1 0 0 1 13.5,10"></path></svg>
+
+<span id="counter" style="left: calc(50% - 22px); bottom: 16px; background-color: white; font-size: 18px; padding: 2px 6px; height:21px; border: 1px solid black; visibility: visible;">
+<div class="arr" style="height:25px;left:-23px;border-radius:12px 0 0 12px;border:1px solid black;border-right:#fff" onclick="if( p-- < 2 ) p = parseInt(total.innerHTML); update_tex()"></div>
+<font id="current">1</font>&nbsp;/&nbsp;<font id="total">1</font>
+<div class="arr" style="height:25px;right:-22px;border-radius:0 12px 12px 0;border:1px solid black;border-left:#fff" onclick="if( p++ > parseInt(total.innerHTML)-1 ) p=1; update_tex()"></div></span>
+
+<div style="top:7px;right:46px">
+<img id="v_1" class="ico" onclick="v=1; update_tex()" style="visibility: hidden; right: 156px;" src="ico/1.svg">
+<img id="v_2" class="ico" onclick="v=2; update_tex()" style="visibility: hidden; right: 117px;" src="ico/2.svg">
+<img id="v_3" class="ico" onclick="v=3; update_tex()" style="visibility: hidden; right: 78px;" src="ico/3.svg">
+<img id="v_4" class="ico" onclick="v=4; update_tex()" style="visibility: hidden; right: 39px;" src="ico/4.svg">
+<img id="v_5" class="ico" onclick="v=5; update_tex()" style="visibility: hidden; right: 0px;" src="ico/5.svg">
+</div>
+
+<div id="cont">
+</div>
+
+<script> mouseIsDown=fss=gyo=false
+alpha=beta=y=ww=wh=previous_p=0
+ww = window.innerWidth; wh = window.innerHeight
+scale=55
+
+Y_axis = new THREE.Vector3( 0, 1, 0 )
+X_axis = new THREE.Vector3( 1, 0, 0 )
+
+url=new URL(window.location.href)
+p = url.searchParams.get("p"); if(!p) p = current.innerHTML; else current.innerHTML = p 
+v = url.searchParams.get("v"); if(!v) v = 1
+
+scene = new THREE.Scene()
+renderer = new THREE.WebGLRenderer({ alpha: true })
+renderer.context.disable(renderer.context.DEPTH_TEST)
+
+camera = new THREE.PerspectiveCamera( Math.min( scale + 20*wh/ww, 90 ), ww/wh, 0.1, 9)
+camera.rotation.order = 'YXZ'
+camera.fov = Math.min( scale + 25*wh/ww, 90 )
+camera.updateProjectionMatrix()
+
+renderer.setSize(ww, wh)
+
+plane = new THREE.PlaneBufferGeometry( 10, 10 )
+loader = new THREE.TextureLoader()
+
+p1 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p1.position.z = -5; scene.add( p1 )
+p2 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p2.position.x =  5; p2.rotation.y = -Math.PI/2; scene.add( p2 )
+p3 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p3.position.z =  5; p3.rotation.y =  Math.PI  ; scene.add( p3 )
+p4 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p4.position.x = -5; p4.rotation.y =  Math.PI/2; scene.add( p4 )
+p5 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p5.position.y = -5; p5.rotation.x = -Math.PI/2; scene.add( p5 )
+p6 = new THREE.Mesh( plane, new THREE.MeshBasicMaterial()); p6.position.y =  5; p6.rotation.x =  Math.PI/2; scene.add( p6 )
+
+update_tex()
+
+function update_tex(){
+
+    if(document.getElementById("panorama_" + previous_p)) document.getElementById("panorama_" + previous_p).style.visibility="hidden"
+
+    current.innerHTML = previous_p = p
+
+    if(document.getElementById("panorama_" + p)) document.getElementById("panorama_" + p).style.visibility="visible"
+
+    if (y >= 0   && y < 45 ) {a = "f"; b = "r"; c = "b"; d = "l"; aa = p1; bb = p2; cc = p3; dd = p4}
+    if (y >= 45  && y < 90 ) {a = "r"; b = "f"; c = "b"; d = "l"; aa = p2; bb = p1; cc = p3; dd = p4}
+    if (y >= 90  && y < 135) {a = "r"; b = "b"; c = "l"; d = "f"; aa = p2; bb = p3; cc = p4; dd = p1}
+    if (y >= 135 && y < 180) {a = "b"; b = "r"; c = "l"; d = "f"; aa = p3; bb = p2; cc = p4; dd = p1}
+    if (y >= 180 && y < 225) {a = "b"; b = "l"; c = "f"; d = "r"; aa = p3; bb = p4; cc = p1; dd = p2}
+    if (y >= 225 && y < 270) {a = "l"; b = "b"; c = "f"; d = "r"; aa = p4; bb = p3; cc = p1; dd = p2}
+    if (y >= 270 && y < 315) {a = "l"; b = "f"; c = "r"; d = "b"; aa = p4; bb = p1; cc = p2; dd = p3}
+    if (y >= 315 && y < 360) {a = "f"; b = "l"; c = "r"; d = "b"; aa = p1; bb = p4; cc = p2; dd = p3}
+
+    t1 = loader.load( 'img/' + p +  a  + v + '.jpg', function(){
+        t1.minFilter = THREE.LinearFilter; t1.magFilter = THREE.NearestFilter; t1.generateMipmaps = false
+        aa.material.map = t1; aa.material.needsUpdate = true; renderer.render( scene, camera )
+
+        update_contents()
+
+        t2 = loader.load( 'img/' + p +  b  + v + '.jpg', function(){
+            t2.minFilter = THREE.LinearFilter; t2.magFilter = THREE.NearestFilter; t2.generateMipmaps = false
+            bb.material.map = t2; bb.material.needsUpdate = true; renderer.render( scene, camera )
+            t3 = loader.load( 'img/' + p +  c  + v + '.jpg', function(){
+                t3.minFilter = THREE.LinearFilter; t3.magFilter = THREE.NearestFilter; t3.generateMipmaps = false
+                cc.material.map = t3; cc.material.needsUpdate = true; renderer.render( scene, camera )
+                t4 = loader.load( 'img/' + p +  d  + v + '.jpg', function(){
+                    t4.minFilter = THREE.LinearFilter; t4.magFilter = THREE.NearestFilter; t4.generateMipmaps = false
+                    dd.material.map = t4; dd.material.needsUpdate = true; renderer.render( scene, camera )
+                    t5 = loader.load( 'img/' + p + 'd' + v + '.jpg', function(){
+                        t5.minFilter = THREE.LinearFilter; t5.magFilter = THREE.NearestFilter; t5.generateMipmaps = false
+                        p5.material.map = t5; p5.material.needsUpdate = true; renderer.render( scene, camera )
+                        t6 = loader.load( 'img/' + p + 'u' + v + '.jpg', function(){
+                            t6.minFilter = THREE.LinearFilter; t6.magFilter = THREE.NearestFilter; t6.generateMipmaps = false
+                            p6.material.map = t6; p6.material.needsUpdate = true; renderer.render( scene, camera );
+                            next_p = parseInt(p) + 1
+                            if( next_p > parseInt(total.innerHTML) ) next_p = 1
+                            fetch( 'img/' + next_p +  'f'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'r'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'b'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'l'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'u'  + v + '.jpg' )
+                            fetch( 'img/' + next_p +  'd'  + v + '.jpg' ) })})})})})})}
+
+parent.onresize = function() {rescale()}
+
+function rescale(){
+    if(ww!=window.innerWidth || wh!=window.innerHeight) {ww=window.innerWidth; wh=window.innerHeight
+    renderer.setSize(ww, wh)
+    camera.aspect = ww / wh
+    reset()}}
+
+function reset(){
+    camera.fov = Math.min( scale + 25*wh/ww, 90 )
+    camera.updateProjectionMatrix()
+    update_contents()
+    renderer.render( scene, camera )}
+
+document.body.appendChild(renderer.domElement)
+
+ondragstart = function(e){e.preventDefault()}
+onmousedown = function(e){mouseIsDown=true; x_coord=e.clientX; y_coord=e.clientY}
+ontouchstart = function(e){e.preventDefault(); mouseIsDown=true; x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}
+onmouseup = function(){mouseIsDown=false}
+onmousemove = function(e){if(mouseIsDown){alpha -= (x_coord-e.clientX)/600; beta -= (y_coord-e.clientY)/600; rotateCam(); x_coord=e.clientX; y_coord=e.clientY}}
+document.body.addEventListener('touchmove', function(e){
+    e.preventDefault(); if(mouseIsDown){alpha -= (x_coord-e.touches[0].clientX)/130; beta -= (y_coord-e.touches[0].clientY)/200; rotateCam(); x_coord=e.touches[0].clientX; y_coord=e.touches[0].clientY}},
+    { passive: false })
+
+function rotateCam(){
+    if(beta> 1.57) beta= 1.57
+    if(beta<-1.57) beta=-1.57
+
+    y = Math.abs((360-alpha*180/Math.PI) % 360)
+
+    update_contents()
+
+    camera.rotation.set(beta, alpha, 0)
+    renderer.render( scene, camera )}
+
+function fs(){ fss=!fss
+    if(fss){
+        if (LinksBody.requestFullscreen) LinksBody.requestFullscreen()
+        else if (LinksBody.webkitRequestFullscreen) LinksBody.webkitRequestFullscreen()}
+    else{
+        if (document.exitFullscreen) document.exitFullscreen()
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen()}}
+
+document.addEventListener("fullscreenchange",       function(){ setTimeout(function(){ rescale() }, 50) })
+document.addEventListener("webkitfullscreenchange", function(){ setTimeout(function(){ rescale() }, 50) })
+
+function zm(){
+    if(scale==55){z.setAttribute("d","M10,16 h12");   scale=20; reset()}
+    else{z.setAttribute("d","M10,16 h12 M16,10 v12"); scale=55; reset()}}
+
+window.addEventListener("devicemotion", gyro )
+
+function gy(){ gyo=!gyo
+    if(!gyo) window.addEventListener(   "devicemotion", gyro )
+    else     window.removeEventListener("devicemotion", gyro )}
+
+function gyro(){
+    if(window.orientation==  0) {alpha += event.rotationRate.beta/4000; beta  += event.rotationRate.alpha/4000}
+    if(window.orientation== 90) {beta  -= event.rotationRate.beta/4000; alpha += event.rotationRate.alpha/4000}
+    if(window.orientation==-90) {beta  += event.rotationRate.beta/4000; alpha -= event.rotationRate.alpha/4000}
+    rotateCam()}
+
+window.addEventListener("devicemotion", function(){if(event.rotationRate.alpha) gy0.style.visibility="visible"})
+
+function mp(){ mapp.style.visibility=="visible" ? mapp.style.visibility="hidden" : mapp.style.visibility="visible" }
+
+function update_contents(){
+    elem = document.getElementById("panorama_" + p)
+    if(elem){
+        for(i=0;i<elem.childNodes.length;i++){
+            if(elem.childNodes[i].dataset){
+
+                alp = parseFloat(-elem.childNodes[i].dataset.alpha)
+                bet = parseFloat( elem.childNodes[i].dataset.beta)
+                pp = new THREE.Vector3(0, 0, 1)
+                pp.applyAxisAngle( Y_axis, alp)
+                pp.applyAxisAngle( X_axis, bet)
+
+                if(Math.abs(Math.abs((alpha - Math.PI) % (2*Math.PI)) - Math.PI + alp) < 1.57 && Math.abs(beta - bet) < 1){
+                    pp.project(camera)
+                    pp.x=(pp.x+1)/2*ww
+                    pp.y=(1-pp.y)/2*wh
+                    elem.childNodes[i].style.left = parseInt(pp.x - 16) + "px"
+                    elem.childNodes[i].style.top  = parseInt(pp.y - 16) + "px"}}}}}
+</script></body>
